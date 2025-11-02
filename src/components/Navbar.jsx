@@ -7,8 +7,8 @@ const linkClass = ({ isActive }) =>
   [
     "inline-flex items-center justify-center transition outline-none focus:ring-2",
     "border-2 border-[var(--color-border)] text-[var(--color-button)] focus:ring-[var(--color-border)]/40",
-    "w-11 h-11 rounded-full",
-    "md:w-48 md:h-9 md:rounded-full",
+    "w-14 h-14 rounded-full",
+    "md:w-56 md:h-12 md:rounded-full",
     "hover:bg-[var(--color-border)] hover:text-[var(--color-background)]",
     isActive ? "bg-[var(--color-border)] text-[var(--color-background)]" : "",
   ].join(" ");

@@ -9,7 +9,7 @@ export default function App() {
   return (
     <div className="min-h-screen flex flex-col">
       <Navbar />
-      <main className="flex-1 mx-auto w-full max-w-5xl p-4">
+      <main className="flex-1 mx-auto w-full max-w-5xl py-6 px-2">
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/search" element={<Search />} />
