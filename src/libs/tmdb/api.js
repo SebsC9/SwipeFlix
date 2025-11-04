@@ -10,9 +10,6 @@ export async function getDetailById({ id, mediaType }) {
   const path = `${mediaType === "tv" ? "tv" : "movie"}/${id}`;
   const url  = `${BASE}/${path}?api_key=${KEY}&language=${LANG}`;
 
-  console.log("URL:", url);
-  console.log("getDetailById →", { id, mediaType });
-
   const res = await fetch(url);
   if (!res.ok) throw new Error(`TMDB error: ${res.status}`);
 

@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import Moviecard from '../components/Moviecard';
 import { FaStar, FaTimes } from "react-icons/fa";
 import { mapMovieListItem } from '../libs/tmdb/mapper';
+import { agregarAWatchlist, cargarWatchlist, guardarWatchlist } from "../libs/watchlist";
 
 function Home() {
 
@@ -9,6 +10,7 @@ function Home() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [mediaType, setMediaType] = useState("movie")
+  const [watchlist, setWatchlist] = useState(cargarWatchlist())
 
   const BASE = import.meta.env.VITE_TMDB_BASE_URL;
   const API_KEY = import.meta.env.VITE_TMDB_API_KEY;
@@ -32,7 +34,6 @@ function Home() {
       const pick = lista[Math.floor(Math.random() * lista.length)];
 
       const mapped = mapMovieListItem(pick);
-      console.log("MAPPED:", mapped, "TYPE:", mediaType);
       setMovie({ ...mapped, mediaType });
     } catch (error) {
       setError(error.message);
@@ -48,6 +49,13 @@ function Home() {
   };
 
   const handleLike = () => {
+        if (movie) {
+      const updateWatchlist = agregarAWatchlist(watchlist, movie);
+      setWatchlist(updateWatchlist)
+      guardarWatchlist(updateWatchlist)
+
+      console.log("Watchlist actualizada", updateWatchlist)
+    }
     fetchRandom();
   };
 
