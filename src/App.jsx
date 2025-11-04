@@ -7,9 +7,14 @@ import Watchlist from "./pages/Watchlist";
 
 export default function App() {
   return (
-    <div className="min-h-screen flex flex-col">
-      <Navbar />
-      <main className="flex-1 mx-auto w-full max-w-5xl py-6 px-2">
+    <div className="h-dvh bg-[var(--color-background)] text-white">
+      <header className="sticky top-0 z-50">
+        <div className="mx-auto w-full max-w-5xl px-2">
+         <Navbar />
+        </div>
+      </header>
+
+      <main className="flex-1 min-h-0 overflow-hidden mx-auto w-full max-w-5xl">
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/search" element={<Search />} />

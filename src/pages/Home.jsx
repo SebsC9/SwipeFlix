@@ -1,21 +1,81 @@
-import React from 'react';
+import { useEffect, useState } from 'react';
 import Moviecard from '../components/Moviecard';
 import { FaStar, FaTimes } from "react-icons/fa";
+import { mapMovieListItem } from '../libs/tmdb/mapper';
 
 function Home() {
+
+  const [movie, setMovie] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+
+  const BASE = import.meta.env.VITE_TMDB_BASE_URL;
+  const API_KEY = import.meta.env.VITE_TMDB_API_KEY;
+  const LANG = import.meta.env.VITE_TMDB_LANG;
+
+  async function fetchRandom() {
+    try {
+      setLoading(true);
+      setError(null);
+
+      const isSerie = Math.random() < 0.5;
+      const tipo = isSerie ? "tv" : "movie";
+      const randomPage = Math.floor(Math.random() * 500) + 1;
+
+      const url = `${BASE}/discover/${tipo}?api_key=${API_KEY}&language=${LANG}&page=${randomPage}`;
+      const response = await fetch(url);
+      const data = await response.json();
+
+      const lista = data.results || [];
+      if (lista.length === 0) {
+        throw new Error("No se encontraron resultados.");
+      }
+      const pick = lista[Math.floor(Math.random() * lista.length)];
+
+      const mapped = mapMovieListItem(pick);
+
+      setMovie(mapped);
+    } catch (error) {
+      setError(error.message);
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  useEffect(() => {
+    fetchRandom();
+  }, []);
+
+  const handleDislike = () => {
+    fetchRandom();
+  };
+
+  const handleLike = () => {
+    fetchRandom();
+  };
+
   return (
     <>
-      <div>
-        <Moviecard />
-      </div>
-      <div className="fixed bottom-20 md:bottom-12 left-1/2 -translate-x-1/2 flex justify-center gap-32">
-        <div className="">
-          <button className="border-2 border-[var(--color-border)] p-5 rounded-full shadow-lg transition-transform duration-200 active:scale-90  active:bg-red-950 hover:scale-110 hover:bg-red-950">
+      <div className="relative h-full w-full overflow-hidden">
+        <div className="flex flex-col items-center justify-start h-full pb-32">
+          {loading && !movie && (
+            <div className="h-[calc(100dvh-180px)] max-h-[720px] aspect-[2/3] w-auto rounded-2xl border-4 border-[var(--color-border)] bg-neutral-900 animate-pulse" />
+          )}
+          {error && <p className="text-red-500 text-sm">{error}</p>}
+          {movie && <Moviecard id={movie.id} isSerie={movie.isSerie} />}
+        </div>
+
+        <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex justify-center z-40 gap-20">
+          <button
+            className="border-2 border-[var(--color-border)] p-5 rounded-full shadow-lg transition-transform duration-200 active:scale-90 active:bg-red-950 hover:scale-110 hover:bg-red-950"
+            onClick={handleDislike}
+          >
             <FaTimes className="text-red-500 text-4xl" />
           </button>
-        </div>
-        <div>
-          <button className="border-2 border-[var(--color-border)] p-5 rounded-full shadow-lg transition-transform duration-200 active:scale-90  active:bg-yellow-700 hover:scale-110 hover:bg-yellow-700">
+          <button
+            className="border-2 border-[var(--color-border)] p-5 rounded-full shadow-lg transition-transform duration-200 active:scale-90 active:bg-yellow-700 hover:scale-110 hover:bg-yellow-700"
+            onClick={handleLike}
+          >
             <FaStar className="text-yellow-500 text-4xl" />
           </button>
         </div>
