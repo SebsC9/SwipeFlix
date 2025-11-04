@@ -59,6 +59,10 @@ function Home() {
     fetchRandom();
   };
 
+  useEffect(() =>{
+      console.log("Watchlist completa", watchlist);
+  }, [watchlist])
+
   return (
     <>
       <div className="relative h-full w-full overflow-hidden">

@@ -50,7 +50,7 @@ function Moviecard({ movie }) {
 
         <div
           className={`absolute left-4 right-4 bg-stone-700/80 backdrop-blur-sm p-3 rounded-lg flex justify-between items-center transition-all duration-300 ${
-            isOpen ? 'bottom-58' : 'bottom-4'
+            isOpen ? 'bottom-66' : 'bottom-4'
           }`}
         >
           <div>

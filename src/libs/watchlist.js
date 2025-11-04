@@ -1,5 +1,7 @@
+const KEY = "swipeflix_watchlist_key"
+
 function cargarWatchlist(){
- const data = localStorage.getItem("swipefilx_watchlist_key")
+ const data = localStorage.getItem(KEY)
  if (!data){
     return [];
  }
@@ -7,7 +9,7 @@ function cargarWatchlist(){
 };
 
 function guardarWatchlist(list) {
-    localStorage.setItem("swipeflix_watchlist_key", JSON.stringify(list));
+    localStorage.setItem(KEY, JSON.stringify(list));
 };
 
 function existeEnWatchlist(list, id, type){
