@@ -3,15 +3,19 @@ import { FaAngleUp, FaImdb } from "react-icons/fa";
 import { useQuery } from "@tanstack/react-query";
 import { getDetailById } from "../libs/tmdb/api.js";
 
-function Moviecard({ id, isSerie }) {
+
+function Moviecard({ movie }) {
   const [isOpen, setIsOpen] = useState(false);
+  const isSerie = movie.mediaType === "tv";
 
   const { data: d, isLoading, isError, error } = useQuery({
-    queryKey: ["detalle", id, isSerie],
-    queryFn: () => getDetailById({ id, isSerie }),
-    enabled: !!id,
+    queryKey: ["detalle", movie, movie.mediaType],
+    queryFn: () => getDetailById({ id: movie.id, mediaType: movie.mediaType }),
+    enabled: !!movie?.id && !!movie.mediaType,
     staleTime: 30 * 60_000,
   });
+
+  if (!movie?.id || !movie?.mediaType) return null;
 
   function handleClick(){
     setIsOpen(!isOpen)
@@ -22,7 +26,7 @@ function Moviecard({ id, isSerie }) {
       <div
         className="
           relative mx-auto
-          h-[calc(100dvh-220px)] max-w-[420px]
+          h-[calc(100dvh-260px)] max-w-[420px]
           aspect-[2/3] w-auto
           rounded-2xl overflow-hidden
           border-4 border-[var(--color-border)]
@@ -46,7 +50,7 @@ function Moviecard({ id, isSerie }) {
 
         <div
           className={`absolute left-4 right-4 bg-stone-700/80 backdrop-blur-sm p-3 rounded-lg flex justify-between items-center transition-all duration-300 ${
-            isOpen ? 'bottom-65' : 'bottom-4'
+            isOpen ? 'bottom-64' : 'bottom-4'
           }`}
         >
           <div>

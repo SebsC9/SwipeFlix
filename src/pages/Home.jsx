@@ -8,6 +8,7 @@ function Home() {
   const [movie, setMovie] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [mediaType, setMediaType] = useState("movie")
 
   const BASE = import.meta.env.VITE_TMDB_BASE_URL;
   const API_KEY = import.meta.env.VITE_TMDB_API_KEY;
@@ -18,11 +19,9 @@ function Home() {
       setLoading(true);
       setError(null);
 
-      const isSerie = Math.random() < 0.5;
-      const tipo = isSerie ? "tv" : "movie";
       const randomPage = Math.floor(Math.random() * 500) + 1;
 
-      const url = `${BASE}/discover/${tipo}?api_key=${API_KEY}&language=${LANG}&page=${randomPage}`;
+      const url = `${BASE}/discover/${mediaType}?api_key=${API_KEY}&language=${LANG}&page=${randomPage}`;
       const response = await fetch(url);
       const data = await response.json();
 
@@ -33,8 +32,8 @@ function Home() {
       const pick = lista[Math.floor(Math.random() * lista.length)];
 
       const mapped = mapMovieListItem(pick);
-
-      setMovie(mapped);
+      console.log("MAPPED:", mapped, "TYPE:", mediaType);
+      setMovie({ ...mapped, mediaType });
     } catch (error) {
       setError(error.message);
     } finally {
@@ -42,9 +41,7 @@ function Home() {
     }
   }
 
-  useEffect(() => {
-    fetchRandom();
-  }, []);
+  useEffect(() => { fetchRandom(); }, [mediaType]);
 
   const handleDislike = () => {
     fetchRandom();
@@ -57,12 +54,30 @@ function Home() {
   return (
     <>
       <div className="relative h-full w-full overflow-hidden">
+
+      <div className="flex justify-center mb-2">
+        <button
+          onClick={() => setMediaType(mediaType === "movie" ? "tv" : "movie")}
+          className="
+            flex items-center justify-center gap-2
+            px-4 py-2 rounded-full
+            border-2 border-[var(--color-border)]
+            text-[var(--color-button)] font-medium
+            transition-all duration-300
+            hover:scale-105 active:scale-95"
+        >
+          <span className="transition-opacity duration-300">
+            {mediaType === "movie" ? "Películas" : "Series"}
+          </span>
+        </button>
+      </div>
+
         <div className="flex flex-col items-center justify-start h-full pb-32">
           {loading && !movie && (
             <div className="h-[calc(100dvh-180px)] max-h-[720px] aspect-[2/3] w-auto rounded-2xl border-4 border-[var(--color-border)] bg-neutral-900 animate-pulse" />
           )}
           {error && <p className="text-red-500 text-sm">{error}</p>}
-          {movie && <Moviecard id={movie.id} isSerie={movie.isSerie} />}
+          {movie && <Moviecard key={`${movie.mediaType}-${movie.id}`} movie={movie}/>}
         </div>
 
         <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex justify-center z-40 gap-20">

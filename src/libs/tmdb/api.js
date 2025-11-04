@@ -5,13 +5,18 @@ const LANG = import.meta.env.VITE_TMDB_LANG || "es-AR";
 
 import { mapMovieDetails } from "./mapper";
 
-export async function getDetailById({ id, isSerie }) {
-  const path = isSerie ? `/tv/${id}` : `/movie/${id}`;
-  const url = `${BASE}${path}?api_key=${KEY}&language=${LANG}`;
-  
-  const res = await fetch(url);
-  if (!res.ok) throw new Error("TMDB respondió con error");
-  const data = await res.json();
+export async function getDetailById({ id, mediaType }) {
+  if (!id) throw new Error("id requerido");
+  const path = `${mediaType === "tv" ? "tv" : "movie"}/${id}`;
+  const url  = `${BASE}/${path}?api_key=${KEY}&language=${LANG}`;
 
+  console.log("URL:", url);
+  console.log("getDetailById →", { id, mediaType });
+
+  const res = await fetch(url);
+  if (!res.ok) throw new Error(`TMDB error: ${res.status}`);
+
+  const data = await res.json();
+ 
   return mapMovieDetails(data);
 }
