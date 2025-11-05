@@ -3,6 +3,7 @@ import Moviecard from '../components/Moviecard';
 import { FaStar, FaTimes } from "react-icons/fa";
 import { mapMovieListItem } from '../libs/tmdb/mapper';
 import { agregarAWatchlist, cargarWatchlist, guardarWatchlist } from "../libs/watchlist";
+import { tmdb } from "../libs/http/tmdbClient"
 
 function Home() {
 
@@ -23,9 +24,11 @@ function Home() {
 
       const randomPage = Math.floor(Math.random() * 500) + 1;
 
-      const url = `${BASE}/discover/${mediaType}?api_key=${API_KEY}&language=${LANG}&page=${randomPage}`;
-      const response = await fetch(url);
-      const data = await response.json();
+      const {data} =await tmdb.get(`/discover/${mediaType}`,{
+        params: {
+          page:randomPage,
+        },
+      });
 
       const lista = data.results || [];
       if (lista.length === 0) {
