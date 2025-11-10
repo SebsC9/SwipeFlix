@@ -57,7 +57,7 @@ function Moviecard({ movie }) {
             <h2 className=" text-xl font-bold  text-white tracking-widest">
               {d?.titulo ? `${d.titulo} (${d.año || '—'})` : isLoading ? 'Cargando…' : '—'}
             </h2>
-            <p className="text-white text-sm"><span className="text-amber-400">IMDb</span> {d?.rating ?? d?.puntuacion ?? '—'}</p>
+            <p className="text-white text-sm"><span className="text-amber-400">TMBD </span> {d?.rating ?? d?.puntuacion ?? '—'}</p>
           </div>
           <button
             onClick={handleClick}

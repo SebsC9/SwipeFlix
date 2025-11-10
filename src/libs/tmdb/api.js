@@ -1,7 +1,7 @@
 
 const BASE = import.meta.env.VITE_TMDB_BASE_URL;
 const KEY  = import.meta.env.VITE_TMDB_API_KEY;
-const LANG = import.meta.env.VITE_TMDB_LANG || "es-AR";
+const LANG = import.meta.env.VITE_TMDB_LANG || "en-US";
 
 import { mapMovieDetails } from "./mapper";
 

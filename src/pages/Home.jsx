@@ -11,7 +11,7 @@ function Home() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [mediaType, setMediaType] = useState("movie")
-  const [watchlist, setWatchlist] = useState(cargarWatchlist())
+  const [watchlist, setWatchlist] = useState(() => cargarWatchlist())
 
   const BASE = import.meta.env.VITE_TMDB_BASE_URL;
   const API_KEY = import.meta.env.VITE_TMDB_API_KEY;
@@ -52,15 +52,18 @@ function Home() {
   };
 
   const handleLike = () => {
-        if (movie) {
-      const updateWatchlist = agregarAWatchlist(watchlist, movie);
-      setWatchlist(updateWatchlist)
-      guardarWatchlist(updateWatchlist)
-
-      console.log("Watchlist actualizada", updateWatchlist)
+    if (movie) {
+      const withType = { ...movie, type: movie.type ?? movie.mediaType };
+      const updated = agregarAWatchlist(watchlist, withType);
+      setWatchlist(updated);
+      console.log("Watchlist actualizada", updated)
     }
     fetchRandom();
   };
+
+  useEffect(() => {
+    guardarWatchlist(watchlist);
+  }, [watchlist])
 
   useEffect(() =>{
       console.log("Watchlist completa", watchlist);
@@ -75,7 +78,7 @@ function Home() {
           onClick={() => setMediaType(mediaType === "movie" ? "tv" : "movie")}
           className="
             flex items-center justify-center gap-2
-            px-4 py-2 rounded-full
+            px-4 py-2 rounded-full cursor-pointer
             border-2 border-[var(--color-border)]
             text-[var(--color-button)] font-medium
             transition-all duration-300
@@ -97,13 +100,13 @@ function Home() {
 
         <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex justify-center z-40 gap-20">
           <button
-            className="border-2 border-[var(--color-border)] p-5 rounded-full shadow-lg transition-transform duration-200 active:scale-90 active:bg-red-950 hover:scale-110 hover:bg-red-950"
+            className="cursor-pointer border-2 border-[var(--color-border)] p-5 rounded-full shadow-lg transition-transform duration-200 active:scale-90 active:bg-red-950 hover:scale-110 hover:bg-red-950"
             onClick={handleDislike}
           >
             <FaTimes className="text-red-500 text-4xl" />
           </button>
           <button
-            className="border-2 border-[var(--color-border)] p-5 rounded-full shadow-lg transition-transform duration-200 active:scale-90 active:bg-yellow-700 hover:scale-110 hover:bg-yellow-700"
+            className="cursor-pointer border-2 border-[var(--color-border)] p-5 rounded-full shadow-lg transition-transform duration-200 active:scale-90 active:bg-yellow-700 hover:scale-110 hover:bg-yellow-700"
             onClick={handleLike}
           >
             <FaStar className="text-yellow-500 text-4xl" />
