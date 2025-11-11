@@ -1,101 +1,79 @@
-import { useEffect, useState } from 'react';
-import Moviecard from '../components/Moviecard';
+import { useState } from "react";
+import { useQuery } from "@tanstack/react-query";
+import Moviecard from "../components/Moviecard";
 import { FaStar, FaTimes } from "react-icons/fa";
-import { mapMovieListItem } from '../libs/tmdb/mapper';
+import { tmdb } from "../libs/http/tmdbClient";
+import { mapMovieListItem } from "../libs/tmdb/mapper";
 import { agregarAWatchlist, cargarWatchlist, guardarWatchlist } from "../libs/watchlist";
-import { tmdb } from "../libs/http/tmdbClient"
+
+const pickRandom = (arr) => arr[Math.floor(Math.random() * arr.length)];
 
 function Home() {
+  const [mediaType, setMediaType] = useState("movie");
+  const [watchlist, setWatchlist] = useState(() => cargarWatchlist());
 
-  const [movie, setMovie] = useState(null);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
-  const [mediaType, setMediaType] = useState("movie")
-  const [watchlist, setWatchlist] = useState(() => cargarWatchlist())
-
-  const BASE = import.meta.env.VITE_TMDB_BASE_URL;
-  const API_KEY = import.meta.env.VITE_TMDB_API_KEY;
-  const LANG = import.meta.env.VITE_TMDB_LANG;
-
-  async function fetchRandom() {
-    try {
-      setLoading(true);
-      setError(null);
-
+  const {
+    data: movie,
+    isFetching: loading,
+    error,
+    refetch,
+  } = useQuery({
+    queryKey: ["random", mediaType],
+    queryFn: async () => {
       const randomPage = Math.floor(Math.random() * 500) + 1;
-
-      const {data} =await tmdb.get(`/discover/${mediaType}`,{
-        params: {
-          page:randomPage,
-        },
+      const { data } = await tmdb.get(`/discover/${mediaType}`, {
+        params: { page: randomPage },
       });
+      const items = Array.isArray(data?.results) ? data.results : [];
+      if (!items.length) throw new Error("No se encontraron resultados.");
+      const pick = pickRandom(items);
 
-      const lista = data.results || [];
-      if (lista.length === 0) {
-        throw new Error("No se encontraron resultados.");
-      }
-      const pick = lista[Math.floor(Math.random() * lista.length)];
-
-      const mapped = mapMovieListItem(pick);
-      setMovie({ ...mapped, mediaType });
-    } catch (error) {
-      setError(error.message);
-    } finally {
-      setLoading(false);
-    }
-  }
-
-  useEffect(() => { fetchRandom(); }, [mediaType]);
+      return { ...mapMovieListItem(pick), mediaType };
+    },
+    keepPreviousData: true,
+    staleTime: 60_000,
+    refetchOnWindowFocus: false,
+  });
 
   const handleDislike = () => {
-    fetchRandom();
+    refetch();
   };
 
   const handleLike = () => {
-    if (movie) {
-      const withType = { ...movie, type: movie.type ?? movie.mediaType };
-      const updated = agregarAWatchlist(watchlist, withType);
-      setWatchlist(updated);
-      console.log("Watchlist actualizada", updated)
-    }
-    fetchRandom();
+    if (!movie) return;
+    const updated = agregarAWatchlist(watchlist, movie);
+    setWatchlist(updated);
+    guardarWatchlist(updated);
+    refetch();
   };
-
-  useEffect(() => {
-    guardarWatchlist(watchlist);
-  }, [watchlist])
-
-  useEffect(() =>{
-      console.log("Watchlist completa", watchlist);
-  }, [watchlist])
 
   return (
     <>
       <div className="relative h-full w-full overflow-hidden">
 
-      <div className="flex justify-center mb-2">
-        <button
-          onClick={() => setMediaType(mediaType === "movie" ? "tv" : "movie")}
-          className="
-            flex items-center justify-center gap-2
-            px-4 py-2 rounded-full cursor-pointer
-            border-2 border-[var(--color-border)]
-            text-[var(--color-button)] font-medium
-            transition-all duration-300
-            hover:scale-105 active:scale-95"
-        >
-          <span className="transition-opacity duration-300">
-            {mediaType === "movie" ? "Películas" : "Series"}
-          </span>
-        </button>
-      </div>
+        <div className="flex justify-center mb-2">
+          <button
+            onClick={() => setMediaType(mediaType === "movie" ? "tv" : "movie")}
+            className="
+              flex items-center justify-center gap-2
+              px-4 py-2 rounded-full cursor-pointer
+              border-2 border-[var(--color-border)]
+              text-[var(--color-button)] font-medium
+              transition-all duration-300
+              hover:scale-105 active:scale-95"
+          >
+            <span className="transition-opacity duration-300">
+              {mediaType === "movie" ? "Películas" : "Series"}
+            </span>
+          </button>
+        </div>
 
         <div className="flex flex-col items-center justify-start h-full pb-32">
           {loading && !movie && (
             <div className="h-[calc(100dvh-180px)] max-h-[720px] aspect-[2/3] w-auto rounded-2xl border-4 border-[var(--color-border)] bg-neutral-900 animate-pulse" />
           )}
-          {error && <p className="text-red-500 text-sm">{error}</p>}
-          {movie && <Moviecard key={`${movie.mediaType}-${movie.id}`} movie={movie}/>}
+          {error && <p className="text-red-500 text-sm">{String(error.message || error)}</p>}
+          {movie && <Moviecard key={`${movie.mediaType}-${movie.id}`} movie={movie} />}
         </div>
 
         <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex justify-center z-40 gap-20">
@@ -118,4 +96,3 @@ function Home() {
 }
 
 export default Home;
- 
