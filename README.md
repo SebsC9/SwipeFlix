@@ -4,12 +4,12 @@ Aplicacion web tipo "Tinder" pero con peliculas, muestra peliculas aleatorias al
 Desarrollado con **REACT + VITE + TAILWINDS**, Usando la API de **TMDB**
 
 ---
-##Demo
+## Demo
 
 [https://swipeflix-app.netlify.app/](https://swipeflix-app.netlify.app/)
 
 ---
-##Tecnologias
+## Tecnologias
 
 - REACT
 - VITE
@@ -19,3 +19,8 @@ Desarrollado con **REACT + VITE + TAILWINDS**, Usando la API de **TMDB**
 - API TMBD
 
 ---
+
+## Ideas a Futuro
+
+- animaciones
+
