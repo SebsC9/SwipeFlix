@@ -1,9 +1,12 @@
+//Manejo del poster
 const IMG_BASE = "https://image.tmdb.org/t/p/w500";
 const posterUrl = (path) =>
     path ? `${IMG_BASE}${path}` : null;
 
+//usamos solo el año de estreno o 1ra emision
 const getYear = (dateStr) => (dateStr ? String(dateStr).slice(0, 4) : "—");
 
+//Mapea un resultado simple
 const mapMovieListItem = (r) => {
     const isSerie = !!r.name || r.media_type === "tv";
     return {
@@ -19,6 +22,7 @@ const mapMovieListItem = (r) => {
 };
 export { mapMovieListItem };
 
+//Mapea los detalles completos
 const mapMovieDetails = (d) => {
     const isSerie = !!d.name;
     return {

@@ -11,10 +11,12 @@ function Watchlist() {
   const [selected, setSelected] = useState(null);
   const [filterType, setFilterType] = useState("all");
 
+  //Guarda cambios en el storage
   useEffect(() => {
     guardarWatchlist(list);
   }, [list]);
 
+  //filtrado por texto y tipo
   const filtered = list.filter((it) => {
     const t = (it.title || it.titulo || it.name || "").toLowerCase();
     const matchesSearch = t.includes(search.trim().toLowerCase());
@@ -26,7 +28,7 @@ function Watchlist() {
   });
 
   
-
+  //Orden de watchlist (agregado, titulo, rating, 1ra emision/estreno, visto)
   const sorted = (() => {
     const base = [...filtered];
     const dir = orderDir === "asc" ? 1 : -1;
@@ -74,13 +76,16 @@ function Watchlist() {
     return base;
   })();
 
+  //elegir una pelicula/Serie
   const handleSelect = (item) => setSelected(item);
 
+  //eliminar
   const handleEliminar = (id, type) => {
     setList((prev) => eliminarDeWatchlist(prev, id, type));
     setSelected((cur) => (cur && cur.id === id && cur.type === type ? null : cur));
   };
 
+  //marcar como vista
   const handleToggleVisto = (id, type) => {
     setList((prev) => toggleVisto(prev, id, type));
     setSelected((cur) =>
@@ -88,6 +93,7 @@ function Watchlist() {
     );
   };
 
+  //convierte el item de watchlist para poder mostrar en moviecard
   const toMoviecard = (it) => ({
     ...it,
     mediaType: it.type || it.media_type,
@@ -99,6 +105,8 @@ function Watchlist() {
 
   return (
     <section className=" relative px-4 py-6">
+
+      {/*Buscador y selector de orden y tipo */}
       <div className="mb-4 flex flex-col items-center gap-2 sm:flex-row sm:justify-between sm:gap-3">
         <input
           type="text"
@@ -166,6 +174,7 @@ function Watchlist() {
         </div>
       </div>
 
+    {/*Verifica que haya peliculas/serioes, sino hay mensaje, si hay renderiza */}
       {sorted.length === 0 ? (
         <p className="opacity-70 text-center py-10">
           {list.length ? `Sin resultados para “${search}”.` : "No tenés nada guardado aún."}
@@ -193,7 +202,8 @@ function Watchlist() {
                     </div>
                   )}
                 </div>
-
+                
+                {/*Marca por si la pelicula fue marcada como visto */}
                 {visto && (
                   <span className="absolute top-2 left-2 text-[10px] px-2 py-1 rounded-full bg-black/70 border backdrop-blur">
                     Visto ✓
@@ -205,12 +215,15 @@ function Watchlist() {
         </ul>
       )}
 
+      {/*Renderiza la moviecard si se selecciona la pelicula */}
       {movie && (
         <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm" onClick={() => setSelected(null)}>
           <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2" onClick={(e) => e.stopPropagation()}>
             <Moviecard key={`${movie.mediaType}-${movie.id}`} movie={movie} />
           </div>
 
+
+        {/*Boton de marcar como visto y eliminar */}
           <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex justify-center z-50 gap-20">
             <button
               aria-label={movie.visto? "Marcar como no visto" : "Marcar como visto"}

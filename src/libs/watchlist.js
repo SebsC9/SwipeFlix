@@ -1,8 +1,10 @@
+//Control de funciones
+
 const KEY = "swipeflix_watchlist_key"
 const IMG_BASE = "https://image.tmdb.org/t/p/w500";
 
 
-
+//Cargar watchlist
 function cargarWatchlist(){
  const data = localStorage.getItem(KEY)
  if (!data){
@@ -11,10 +13,13 @@ function cargarWatchlist(){
  return JSON.parse(data);
 };
 
+
+//Guardar watchlist
 function guardarWatchlist(list) {
     localStorage.setItem(KEY, JSON.stringify(list));
 };
 
+//Verificar si una pelicula/serie ya esta en la watchlist
 function existeEnWatchlist(list, id, type){
     const existe = list.find((item) => item.id === id && item.type === type);
 
@@ -25,6 +30,7 @@ function existeEnWatchlist(list, id, type){
     }
 };
 
+//Normaliza los datos de una pelicula/serie antes de guardarla en la watchlist, une nombres, completa valores y genera poster
 function normalizeForWatchlist(movie) {
   if (!movie || !movie.id) return null;
 
@@ -78,6 +84,7 @@ function normalizeForWatchlist(movie) {
   };
 }
 
+//agregar a la watchlist
 function agregarAWatchlist(list, movie){
     const item = normalizeForWatchlist(movie);
     if (!item) return Array.isArray(list) ? list : [];
@@ -86,10 +93,12 @@ function agregarAWatchlist(list, movie){
     return [...base, item];
 }
 
+//elimina de la watchlist
 function eliminarDeWatchlist(list, id, type){
     return list.filter(item => !(item.id === id && item.type === type));
 }
 
+//marcar como visto
 function toggleVisto(list, id, type){
     return list.map(item =>{
         if (item.id === id && item.type === type){

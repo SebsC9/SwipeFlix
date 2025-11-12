@@ -8,7 +8,7 @@ import Watchlist from "./pages/Watchlist";
 export default function App() {
   return (
     <div className="h-dvh bg-[var(--color-background)] text-white">
-      <header className="sticky top-0 z-50">
+      <header className="top-0 z-50">
         <div className="mx-auto w-full max-w-5xl px-2">
          <Navbar />
         </div>

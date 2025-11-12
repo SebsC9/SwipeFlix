@@ -12,6 +12,7 @@ function Search() {
   const [selected, setSelected] = useState(null);
   const [watchlist, setWatchlist] = useState(cargarWatchlist());
 
+  //Manejo de carga, errores y exito(Tastack) y axios para llamar y buscar en la API
   const {
     data: results = [],
     isFetching: loading,
@@ -32,17 +33,20 @@ function Search() {
     refetchOnWindowFocus: false,
   });
 
+  //Funcion gregar a la watchlist
   function handleAgregarAWatchlist(movie) {
     const updated = agregarAWatchlist(watchlist, movie);
     setWatchlist(updated);
     guardarWatchlist(updated);
   }
 
+
   const movie = selected ? { ...selected, mediaType } : null;
 
   return (
     <>
       <section className="relative px-4 py-6">
+        {/*Formulario de busqueda y seleccion de tiopo*/}
         <form
           onSubmit={(e) => {
             e.preventDefault();
@@ -80,6 +84,8 @@ function Search() {
             </button>
           </div>
         </form>
+
+        {/*Manejo de carga, error y grilla de busqueda */}
         {error && (
           <p className="text-red-500 text-sm mb-3">
             {String(error.message || error)}
@@ -115,6 +121,7 @@ function Search() {
           </ul>
         )}
 
+        {/*Renderizacion de moviecard para ver mas data de la pelicula buscada */}
         {movie && (
           <div
             className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center"
@@ -126,6 +133,7 @@ function Search() {
             >
               <Moviecard key={`${movie.mediaType}-${movie.id}`} movie={movie} />
 
+              {/*Agregar a watchlist desde search */}
               <div className="mt-6 flex justify-center">
                 <button
                   onClick={() => handleAgregarAWatchlist(movie)}
