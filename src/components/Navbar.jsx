@@ -3,6 +3,7 @@ import { NavLink } from "react-router-dom";
 import { FaFilm, FaSearch, FaRegBookmark } from "react-icons/fa";
 import "../index.css";
 
+{/*setea y une las clases, si esta activo o no */}
 const linkClass = ({ isActive }) =>
   [
     "inline-flex items-center justify-center transition outline-none focus:ring-2",

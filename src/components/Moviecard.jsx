@@ -8,6 +8,7 @@ function Moviecard({ movie }) {
   const [isOpen, setIsOpen] = useState(false);
   const isSerie = movie.mediaType === "tv";
 
+  //Manejo de carga/error/render
   const { data: d, isLoading, isError, error } = useQuery({
     queryKey: ["detalle", movie, movie.mediaType],
     queryFn: () => getDetailById({ id: movie.id, mediaType: movie.mediaType }),
@@ -17,12 +18,15 @@ function Moviecard({ movie }) {
 
   if (!movie?.id || !movie?.mediaType) return null;
 
+  //maneja si se abre o cierra los detalles
   function handleClick(){
     setIsOpen(!isOpen)
   }
 
   return (
     <div className="flex justify-center">
+
+      {/*render de carga, error y moviecard */}
       <div
         className="
           relative mx-auto
@@ -72,6 +76,7 @@ function Moviecard({ movie }) {
           </button>
         </div>
 
+        {/*detalles */}
         <div
           className={`absolute bottom-0 left-0 right-0 bg-stone-700/80 backdrop-blur-sm p-4 overflow-y-auto transition-transform duration-300 ease-in-out ${
             isOpen ? 'translate-y-0' : 'translate-y-full'
