@@ -13,7 +13,7 @@ function Home() {
   const [mediaType, setMediaType] = useState("movie");
   const [watchlist, setWatchlist] = useState(() => cargarWatchlist());
 
-  //Tastack Query, recibe peliucla o serie alatoria
+  //TanStack Query, recibe pelicula o serie aleatoria
   const {
     data: movie,
     isFetching: loading,
@@ -22,13 +22,13 @@ function Home() {
   } = useQuery({
     queryKey: ["random", mediaType],
     queryFn: async () => {
-      const randomPage = Math.floor(Math.random() * 500) + 1; //genera una pagina randoma
+      const randomPage = Math.floor(Math.random() * 500) + 1; //genera una pagina random
       const { data } = await tmdb.get(`/discover/${mediaType}`, {
-        params: { page: randomPage }, //genera el array de peliculas/series
+        params: { page: randomPage }, //pide la pagina de resultaedos, del tipo seleccionado
       });
       const items = Array.isArray(data?.results) ? data.results : [];
       if (!items.length) throw new Error("No se encontraron resultados.");
-      const pick = pickRandom(items); //elige una
+      const pick = pickRandom(items); //elige una serie/pelicula
 
       return { ...mapMovieListItem(pick), mediaType };
     },

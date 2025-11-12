@@ -12,7 +12,7 @@ function Search() {
   const [selected, setSelected] = useState(null);
   const [watchlist, setWatchlist] = useState(cargarWatchlist());
 
-  //Manejo de carga, errores y exito(Tastack) y axios para llamar y buscar en la API
+  //Manejo de carga, errores y exito(Tanstack) y axios para llamar y buscar en la API
   const {
     data: results = [],
     isFetching: loading,
@@ -33,7 +33,7 @@ function Search() {
     refetchOnWindowFocus: false,
   });
 
-  //Funcion gregar a la watchlist
+  //Funcion agregar a la watchlist
   function handleAgregarAWatchlist(movie) {
     const updated = agregarAWatchlist(watchlist, movie);
     setWatchlist(updated);
@@ -46,7 +46,7 @@ function Search() {
   return (
     <>
       <section className="relative px-4 py-6">
-        {/*Formulario de busqueda y seleccion de tiopo*/}
+        {/*Formulario de busqueda y seleccion de tipo*/}
         <form
           onSubmit={(e) => {
             e.preventDefault();
