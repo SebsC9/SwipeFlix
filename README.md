@@ -23,4 +23,5 @@ Desarrollado con **REACT + VITE + TAILWIND**, Usando la API de **TMDB**
 ## Ideas a Futuro
 
 - animaciones
+- filtro
 
