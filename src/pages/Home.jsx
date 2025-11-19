@@ -28,13 +28,24 @@ function Home() {
       });
       const items = Array.isArray(data?.results) ? data.results : [];
       if (!items.length) throw new Error("No se encontraron resultados.");
-      const pick = pickRandom(items); //elige una serie/pelicula
+
+      const validItems =items.filter(
+        (item) =>
+          item.poster_path &&
+          item.overview &&
+          item.vote_average > 5
+      );
+
+      if (!validItems) throw new Error("Contenido insuficiente, rentenarndo..")
+
+      const pick = pickRandom(validItems); //elige una serie/pelicula
 
       return { ...mapMovieListItem(pick), mediaType };
     },
     keepPreviousData: true,
     staleTime: 60_000,
     refetchOnWindowFocus: false,
+    retry: 2,
   });
 
   //Dislike
